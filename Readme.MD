@@ -8,7 +8,7 @@ Here I am introducing a simple conversion component, which let developers to wri
 
 ## Getting Started
 
-Refer to [test classes](https://github.com/biju74nair/simple-message-converters/tree/master/src/test/java/com/ak2006/myproject/rest/convertors/test) on how to use these components. These components can be used with & without Dependency Injection Framework.
+Refer to [test classes](https://github.com/tehflavors/simple-message-converters/tree/master/src/test/java/com/ak2006/myproject/rest/convertors/test) on how to use these components. These components can be used with & without Dependency Injection Framework.
 
 ## Contributing
 
@@ -18,5 +18,5 @@ Please feel free to contribute.
 
 * **Biju Nair** 
 
-See also the list of [contributors](https://github.com/biju74nair/simple-message-converters/contributors) who participated in this project.
+See also the list of [contributors](https://github.com/tehflavors/simple-message-converters/contributors) who participated in this project.
 
