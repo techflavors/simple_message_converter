@@ -43,10 +43,6 @@
 		</repository>
 	</distributionManagement>
 
-	<properties>
-		<spring.version>3.2.2.RELEASE</spring.version>
-		<testng.version>6.8.7</testng.version>
-	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>javax.inject</groupId>
@@ -54,34 +50,16 @@
 			<version>1</version>
 			<scope>provided</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.testng</groupId>
-			<artifactId>testng</artifactId>
-			<version>${testng.version}</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-core</artifactId>
-			<version>${spring.version}</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-test</artifactId>
-			<version>${spring.version}</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context</artifactId>
-			<version>${spring.version}</version>
-			<scope>provided</scope>
-		</dependency>
-
 	</dependencies>
 	<build>
 		<plugins>
+			<!-- <plugin> <groupId>com.github.techflavors</groupId> <artifactId>smc-maven-plugin</artifactId> 
+				<version>0.0.1-SNAPSHOT</version> <executions> <execution> <id>smc</id> <goals> 
+				<goal>smc-generator</goal> </goals> </execution> </executions> <configuration> 
+				<sourceDirectory>${project.dir}/src/test/java</sourceDirectory> <converters> 
+				<converter> <sourceType>techflavors.tools.smc.samples.rest.data.Person</sourceType> 
+				<targetType>techflavors.tools.smc.samples.persist.data.Person</targetType> 
+				</converter> </converters> </configuration> </plugin> -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -108,6 +86,9 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<version>2.9.1</version>
+				<configuration>
+					<additionalparam>-Xdoclint:none</additionalparam>
+				</configuration>
 				<executions>
 					<execution>
 						<id>attach-javadocs</id>
@@ -117,20 +98,9 @@
 					</execution>
 				</executions>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-gpg-plugin</artifactId>
-				<version>1.5</version>
-				<executions>
-					<execution>
-						<id>sign-artifacts</id>
-						<phase>verify</phase>
-						<goals>
-							<goal>sign</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
+			<!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-gpg-plugin</artifactId> 
+				<version>1.5</version> <executions> <execution> <id>sign-artifacts</id> <phase>verify</phase> 
+				<goals> <goal>sign</goal> </goals> </execution> </executions> </plugin> -->
 		</plugins>
 	</build>
 </project>

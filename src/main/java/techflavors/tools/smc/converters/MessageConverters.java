@@ -4,10 +4,13 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -18,30 +21,35 @@ import techflavors.tools.smc.utils.ReflectionUtil;
  * 
  * <ol>
  * <li>If this component is used as part javax dependency injection framework
- * (like Spring), create a bean as shown below <pre>
- * {@code
- * @Named("RestConvertors") 
- * public MessageConverters converters() { 
- * 		return new MessageConverters( 
- * 				"com.ak2006.myproject.rest.convertors"); 
- * } 
- * }<pre>
- * For using this converter inject the converter as <pre>
- * {@code 
- * @Inject 
- * @Bean(name="RestConvertors")
- *  MessageConverters messageConverters;
- *  
- * ... 
+ * (like Spring), create a bean as shown below
  * 
- * messageConverters.toTargetType(obj); 
- * }<pre>
+ * <pre>
+ * {@code @Bean("RestConvertors")} 
+ * public MessageConverters converters() {
+ *   return new MessageConverters(
+ *    "techflavors.tools.smc.samples.rest.convertors"); 
+ * }
+ * </pre>
+ * 
+ * </li>
+ * <li>For using this converter inject the converter as
+ * 
+ * <pre>
+ * {@code @Inject @Named(name="RestConvertors") }
+ *        MessageConverters messageConverters;
+ * 
+ *        public void somemethod(){
+ *           messageConverters.toTargetType(obj); 
+ *        }
+ * </pre>
+ * 
  * <li>If it is used with non dependency framework, create a singleton instance
- * of this class (per conversion) and invoke
- * {@link #setMessageConverters(List)}</li>
+ * of this class (per conversion) and invoke {@link #setMessageConverters(List)}
+ * and <a target="_blank" href=
+ * "https://github.com/techflavors/simple_message_converter/blob/master/src/test/java/techflavors/tools/smc/samples/rest/converters/test/TestMessageConversionWithoutDependencyInjection.java">TestMessageConversionWithoutDependencyInjection</a></li>
  * </ol>
  * 
- * @author Biju Nair
+ * 
  *
  */
 public class MessageConverters {
@@ -79,9 +87,10 @@ public class MessageConverters {
 					sourceTypeClass);
 			Method toTargetTypeMethodWithParam = ReflectionUtil.findMethod(converter.getClass(), "toTargetType",
 					sourceTypeClass, Map.class);
-			Method toSourceTypeMethod = ReflectionUtil.findMethod(converter.getClass(), "toSourceType", targetTypeClass);
-			Method toSourceTypeWithParam = ReflectionUtil.findMethod(converter.getClass(), "toSourceType", targetTypeClass,
-					Map.class);
+			Method toSourceTypeMethod = ReflectionUtil.findMethod(converter.getClass(), "toSourceType",
+					targetTypeClass);
+			Method toSourceTypeWithParam = ReflectionUtil.findMethod(converter.getClass(), "toSourceType",
+					targetTypeClass, Map.class);
 
 			if (toTargetTypeMethod != null || toTargetTypeMethodWithParam != null) {
 				messageConverters.put(sourceTypeClass, converter);
@@ -109,20 +118,20 @@ public class MessageConverters {
 		return convertoSourceType(data, param);
 	}
 
-	public <TargetType> List<TargetType> toTargetTypeAsList(Object data) {
-		return convertAsList(convertToTargetType(data, null));
+	public <TargetType> Collection<TargetType> toTargetTypeAsCollection(Object data) {
+		return convertAsCollection(convertToTargetType(data, null));
 	}
 
-	public <TargetType> List<TargetType> toTargetTypeAsList(Object data, Map<String, Object> param) {
-		return convertAsList(convertToTargetType(data, param));
+	public <TargetType> Collection<TargetType> toTargetTypeAsCollection(Object data, Map<String, Object> param) {
+		return convertAsCollection(convertToTargetType(data, param));
 	}
 
-	public <SourceType> List<SourceType> toSourceTypeAsList(Object data) {
-		return convertAsList(convertoSourceType(data, null));
+	public <SourceType> Collection<SourceType> toSourceTypeAsCollection(Object data) {
+		return convertAsCollection(convertoSourceType(data, null));
 	}
 
-	public <SourceType> List<SourceType> toSourceTypeAsList(Object data, Map<String, Object> param) {
-		return convertAsList(convertoSourceType(data, param));
+	public <SourceType> Collection<SourceType> toSourceTypeAsCollection(Object data, Map<String, Object> param) {
+		return convertAsCollection(convertoSourceType(data, param));
 	}
 
 	public <TargetType> TargetType[] toTargetTypeAsArray(Object data) {
@@ -157,6 +166,8 @@ public class MessageConverters {
 			result = (ReturnType) convertInternal((Object[]) data, param, dir);
 		} else if (data instanceof List) {
 			result = (ReturnType) convertInternal((List<?>) data, param, dir);
+		} else if (data instanceof Set) {
+			result = (ReturnType) convertInternal((Set<?>) data, param, dir);
 		} else {
 			result = (ReturnType) convertInternal(data, param, dir);
 		}
@@ -170,6 +181,18 @@ public class MessageConverters {
 		}
 
 		List<Object> resultList = new ArrayList<Object>(data.size());
+		for (Object dataObj : data) {
+			resultList.add(convertInternal(dataObj, param, dir));
+		}
+		return resultList;
+	}
+
+	private Set<?> convertInternal(Set<?> data, Map<String, Object> param, int dir) {
+		if (data == null || data.size() == 0) {
+			return Collections.EMPTY_SET;
+		}
+
+		Set<Object> resultList = new HashSet<Object>(data.size());
 		for (Object dataObj : data) {
 			resultList.add(convertInternal(dataObj, param, dir));
 		}
@@ -196,9 +219,9 @@ public class MessageConverters {
 		if (data == null)
 			return null;
 		MessageConverter<?, ?> messageConverter = messageConverters.get(data.getClass());
-		
-		if(messageConverter == null) {
-			throw new MessageConversionException(String.format("No Converter/method found for %s",data.getClass()));
+
+		if (messageConverter == null) {
+			throw new MessageConversionException(String.format("No Converter/method found for %s", data.getClass()));
 		}
 
 		Object result = null;
@@ -217,14 +240,16 @@ public class MessageConverters {
 	}
 
 	@SuppressWarnings("unchecked")
-	private <ReturnType> List<ReturnType> convertAsList(Object convertedObject) {
+	private <ReturnType> Collection<ReturnType> convertAsCollection(Object convertedObject) {
 		if (convertedObject == null)
 			return null;
-		List<ReturnType> result = null;
+		Collection<ReturnType> result = null;
 		if (convertedObject instanceof Object[]) {
 			result = (List<ReturnType>) Arrays.asList((Object[]) convertedObject);
 		} else if (convertedObject instanceof List) {
 			result = (List<ReturnType>) convertedObject;
+		} else if (convertedObject instanceof Set) {
+			result = (Set<ReturnType>) convertedObject;
 		} else {
 			result = new ArrayList<ReturnType>();
 			result.add((ReturnType) convertedObject);

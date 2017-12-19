@@ -4,7 +4,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
-public class ReflectionUtil {
+public abstract class ReflectionUtil {
 	public static Class<?> getSuperClassGenericType(Class<?> clz, int paramindex) {
 		Type type = clz.getGenericSuperclass();
 		return getGenericType(type, paramindex);

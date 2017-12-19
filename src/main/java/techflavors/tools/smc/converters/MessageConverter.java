@@ -2,6 +2,16 @@ package techflavors.tools.smc.converters;
 
 import java.util.Map;
 
+/**
+ * Base class for all convertor's
+ * 
+ * @author Biju Nair
+ *
+ * @param <SourceType>
+ *            Type of the source object
+ * @param <TargetType>
+ *            Type of the target object
+ */
 public abstract class MessageConverter<SourceType, TargetType> {
 
 	// Injected by MessageConverters, because we may have different type of
@@ -42,7 +52,7 @@ public abstract class MessageConverter<SourceType, TargetType> {
 	 * @param data
 	 * @param param
 	 *            - additional parameters
-	 * @return
+	 * @return Target Type
 	 */
 	protected TargetType toTargetType(SourceType data, Map<String, Object> param) {
 		throw new UnsupportedOperationException("Expecting child classes to implement this method");
@@ -53,7 +63,7 @@ public abstract class MessageConverter<SourceType, TargetType> {
 	 * @param data
 	 * @param param
 	 *            - additional parameters
-	 * @return
+	 * @return Target Type
 	 */
 	protected SourceType toSourceType(TargetType data, Map<String, Object> param) {
 		throw new UnsupportedOperationException("Expecting child classes to implement this method");
