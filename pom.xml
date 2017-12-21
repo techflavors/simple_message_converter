@@ -53,13 +53,6 @@
 	</dependencies>
 	<build>
 		<plugins>
-			<!-- <plugin> <groupId>com.github.techflavors</groupId> <artifactId>smc-maven-plugin</artifactId> 
-				<version>0.0.1-SNAPSHOT</version> <executions> <execution> <id>smc</id> <goals> 
-				<goal>smc-generator</goal> </goals> </execution> </executions> <configuration> 
-				<sourceDirectory>${project.dir}/src/test/java</sourceDirectory> <converters> 
-				<converter> <sourceType>techflavors.tools.smc.samples.rest.data.Person</sourceType> 
-				<targetType>techflavors.tools.smc.samples.persist.data.Person</targetType> 
-				</converter> </converters> </configuration> </plugin> -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -98,9 +91,31 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-gpg-plugin</artifactId> 
-				<version>1.5</version> <executions> <execution> <id>sign-artifacts</id> <phase>verify</phase> 
-				<goals> <goal>sign</goal> </goals> </execution> </executions> </plugin> -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-gpg-plugin</artifactId>
+				<version>1.5</version>
+				<executions>
+					<execution>
+						<id>sign-artifacts</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>sign</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.sonatype.plugins</groupId>
+				<artifactId>nexus-staging-maven-plugin</artifactId>
+				<version>1.6.7</version>
+				<extensions>true</extensions>
+				<configuration>
+					<serverId>ossrh</serverId>
+					<nexusUrl>https://oss.sonatype.org/</nexusUrl>
+					<autoReleaseAfterClose>true</autoReleaseAfterClose>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 </project>
